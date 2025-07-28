@@ -1,0 +1,95 @@
+# 应用基本信息
+app:
+  name: knowledge-base
+  namespace: "knowledge"
+  replicas: "1"
+  image:
+    repository: "registry.cn-chengdu.aliyuncs.com/su03/knowledge_base"
+    tag: "25072801"
+    pullPolicy: IfNotPresent
+
+# 资源限制配置
+resources:
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+
+# 服务配置
+service:
+  type: "ClusterIP"
+  port: "8080"
+  nodePort: ""
+  targetPort: "8080"
+
+# PostgreSQL配置（非敏感信息放这）
+postgres:
+  host: "postgresql-primary.middleware.svc.cluster.local"
+  port: "5432"
+  user: "postgres"
+  dbName: "knowledge_base"
+  sslMode: "disable"
+
+# MinIO配置（非敏感信息放这）
+minio:
+  endpoint: "minio.middleware.svc.cluster.local:9000"
+  useSSL: "false"
+  bucketName: "knowledge-bucket"
+
+# 敏感信息（实际部署时建议通过--set或外部secret注入）
+secrets:
+  dbPassword: "SLBpg2025"
+  minioAccessKey: "admin"
+  minioSecretKey: "admin@2025"
+
+# 应用端口
+serverPort: "8080"
+
+# Istio 相关配置，根据 service.type 自动启用/禁用
+istio:
+  gatewayService:
+    name: knowledge-ingressgateway
+    namespace: istio-system
+    externalTrafficPolicy: Local
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+      - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+      name: knowledge-gateway
+      nodePort: "30080"
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: istio-ingressgateway
+      istio: ingressgateway
+    sessionAffinity: None
+    type: NodePort
+  gateway:
+    name: knowledge-gateway
+    namespace: knowledge
+    selector:
+      istio: ingressgateway
+    servers:
+      - hosts:
+          - 192.168.2.190
+        port:
+          name: knowledge-base-service
+          number: 8080
+          protocol: HTTP
+  virtualService:
+    name: knowledge-vs
+    namespace: knowledge
+    gateways:
+      - knowledge-gateway
+    hosts:
+      - 192.168.2.190
+    http:
+      - route:
+          - destination:
+              host: knowledge-base-service
+              port:
+                number: 8080

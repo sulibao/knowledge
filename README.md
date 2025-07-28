@@ -1,8 +1,8 @@
-# Knowledge Base 应用 Docker 和 Kubernetes 部署指南
+# Knowledge Base 应用部署指南
 
 ## 环境变量配置
 
-本应用支持通过环境变量配置所有参数，以下是可用的环境变量列表：
+支持手动修改./config.yaml和声明变量的形式进行获取变量值
 
 ### 数据库配置
 
@@ -25,17 +25,25 @@
 
 - `SERVER_PORT`: 服务器监听端口
 
+## golang环境运行
+
+```golang
+// 修改./config.yaml变量文件
+go run main.go
+```
+
 ## Docker 部署
 
 ### 构建 Docker 镜像
 
 ```bash
-docker build -t knowledge-base:latest .
+docker buildx build --provenance=false --push --tag registry_address/knowledge_base:tag --platform linux/amd64,linux/arm64 .
 ```
 
 ### 运行 Docker 容器
 
 ```bash
+# 变量由命令行传参声明
 docker run -d \
   --name knowledge-base \
   -p 8080:8080 \
@@ -48,5 +56,19 @@ docker run -d \
   -e MINIO_ACCESS_KEY_ID=admin \
   -e MINIO_SECRET_ACCESS_KEY=admin@2025 \
   -e MINIO_BUCKET_NAME=knowledge-bucket \
-  registry.cn-chengdu.aliyuncs.com/su03/knowledge_base:2572602
+  registry_address/knowledge_base:tag
+```
+
+## K8S/Chart部署
+
+### 修改变量文件
+
+```yaml
+# 修改./helm-chart/knowledge-values.yaml变量文件，确认好镜像版本等信息
+```
+
+### 通过helm进行安装knowledge
+
+```bash
+helm -n ns install knowledge -f knowledge-values.yaml knowledge-base-0.1.4.tgz
 ```
