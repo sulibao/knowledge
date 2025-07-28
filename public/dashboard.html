@@ -5,163 +5,936 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Knowledge Base</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            color: #0056b3;
-        }
-        .upload-section, .files-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        input[type="file"] {
-            border: 1px solid #ccc;
-            padding: 8px;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .file-list {
-            list-style: none;
+        * {
+            margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        .file-list li {
-            background-color: #e9e9e9;
-            margin-bottom: 8px;
-            padding: 10px;
-            border-radius: 4px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            color: white;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(106, 17, 203, 0.3) 0%, rgba(37, 117, 252, 0.3) 100%);
+            z-index: -1;
+        }
+        .sidebar-header {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sidebar-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+            margin-top: 30px;
+        }
+        .sidebar-menu li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        .sidebar-menu li:hover, .sidebar-menu li.active {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+            border-left: 4px solid #ff9a9e;
+            transform: translateX(5px);
+        }
+        .sidebar-menu li i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px 0 0 20px;
+            margin: 20px 20px 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: relative;
+            z-index: 5;
+        }
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            border-radius: 20px 0 0 20px;
+            z-index: -1;
+        }
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(106, 17, 203, 0.1);
         }
-        .file-list li button {
-            margin-left: 5px;
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-        .file-list li .download-btn {
-            background-color: #28a745;
-        }
-        .file-list li .download-btn:hover {
-            background-color: #218838;
-        }
-        .file-list li .delete-btn {
-            background-color: #dc3545;
-        }
-        .file-list li .delete-btn:hover {
-            background-color: #c82333;
+        .header h1 {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         .logout-btn {
-            background-color: #6c757d;
-            float: right;
+            background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         .logout-btn:hover {
-            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .upload-section, .files-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(106, 17, 203, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .file-input-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        input[type="file"]:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        .upload-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        #uploadMessage {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .progress-container {
+            margin-top: 15px;
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            font-weight: bold;
+        }
+        .upload-log {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            color: #333;
+            display: none;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #e0e0e0;
+            line-height: 1.4;
+        }
+        .log-entry:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .log-time {
+            color: #6c757d;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .log-info {
+            color: #0275d8;
+        }
+        .log-error {
+            color: #d9534f;
+        }
+        .log-success {
+            color: #5cb85c;
+        }
+        
+        .cancel-upload-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .cancel-upload-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .retry-upload-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .retry-upload-btn:hover {
+            background-color: #218838;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        .file-list li {
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid #6a11cb;
+        }
+        .file-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .file-list li .file-name {
+            font-weight: 500;
+            color: #444;
+        }
+        .file-actions {
+            display: flex;
+        }
+        .file-list li button {
+            margin-left: 8px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .file-list li .download-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .file-list li .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+        .file-list li .delete-btn {
+            background: linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%);
+            color: white;
+        }
+        .file-list li .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 95, 109, 0.3);
+        }
+        .empty-files {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .loading-files {
+            text-align: center;
+            padding: 20px;
+            color: #6a11cb;
+            font-style: italic;
+            background-color: rgba(106, 17, 203, 0.05);
+            border-radius: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .file-load-error {
+            text-align: center;
+            padding: 20px;
+            color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        <h1>Knowledge Base Dashboard</h1>
-
-        <div class="upload-section">
-            <h2>Upload File</h2>
-            <input type="file" id="fileInput">
-            <button onclick="uploadFile()">Upload</button>
-            <p id="uploadMessage"></p>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Knowledge Base</h1>
+                <p>文件管理系统</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" data-section="upload">📤 上传文件</li>
+                <li data-section="files">📁 我的文件</li>
+            </ul>
         </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h1>知识库管理面板</h1>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+            
+            <div id="upload-content" class="content-section active">
+                <div class="upload-section">
+                    <h2 class="section-title">上传文件</h2>
+                    <div class="file-input-container">
+                        <input type="file" id="fileInput">
+                        <button class="upload-btn" onclick="uploadFile()">上传</button>
+                    </div>
+                    <p id="uploadMessage"></p>
+                    
+                    <!-- 进度条 -->
+                    <div id="progressContainer" class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressBarFill" class="progress-bar-fill"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">0%</div>
+                    </div>
+                    
+                    <!-- 上传日志 -->
+                    <div id="uploadLog" class="upload-log"></div>
+                </div>
+            </div>
 
-        <div class="files-section">
-            <h2>Your Files</h2>
-            <ul id="fileList" class="file-list"></ul>
+            <div id="files-content" class="content-section">
+                <div class="files-section">
+                    <h2 class="section-title">我的文件</h2>
+                    <ul id="fileList" class="file-list"></ul>
+                    <div id="emptyFiles" class="empty-files" style="display: none;">
+                        <p>暂无文件，请先上传文件。</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        async function fetchFiles() {
-            const response = await fetch('/api/files');
-            if (response.ok) {
-                const files = await response.json();
-                const fileListElement = document.getElementById('fileList');
-                fileListElement.innerHTML = '';
-                files.forEach(file => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <span>${file}</span>
-                        <div>
-                            <button class="download-btn" onclick="downloadFile('${file}')">Download</button>
-                            <button class="delete-btn" onclick="deleteFile('${file}')">Delete</button>
-                        </div>
-                    `;
-                    fileListElement.appendChild(listItem);
+        // 菜单切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.sidebar-menu li');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有菜单项的active类
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // 为当前点击的菜单项添加active类
+                    this.classList.add('active');
+                    
+                    // 获取要显示的内容区域
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // 隐藏所有内容区域
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // 显示对应的内容区域
+                    document.getElementById(`${sectionId}-content`).classList.add('active');
+                    
+                    // 如果切换到文件列表页面，则加载文件列表
+                    if (sectionId === 'files') {
+                        fetchFiles();
+                    }
                 });
-            } else {
-                document.getElementById('uploadMessage').textContent = 'Failed to load files.';
+            });
+            
+            // 不再初始加载文件列表，只有当用户切换到文件列表页面时才加载
+            // 初始化上传日志区域
+            const uploadLogContainer = document.getElementById('uploadLog');
+            if (uploadLogContainer) {
+                uploadLogContainer.innerHTML = '<div class="log-entry"><span class="log-info">系统就绪，可以开始上传文件</span></div>';
+                uploadLogContainer.style.display = 'block';
+            }
+        });
+
+        // 文件列表加载状态标志
+        let isLoadingFiles = false;
+        let fileLoadRetries = 0;
+        const MAX_RETRIES = 3;
+        
+        async function fetchFiles() {
+            // 如果已经在加载中，则不重复加载
+            if (isLoadingFiles) {
+                return;
+            }
+            
+            isLoadingFiles = true;
+            const fileListElement = document.getElementById('fileList');
+            const emptyFilesElement = document.getElementById('emptyFiles');
+            
+            // 显示加载中状态
+            fileListElement.innerHTML = '<div class="loading-files">正在加载文件列表...</div>';
+            
+            try {
+                const response = await fetch('/api/files');
+                
+                if (response.ok) {
+                    const files = await response.json();
+                    fileListElement.innerHTML = '';
+                    
+                    if (files.length === 0) {
+                        emptyFilesElement.style.display = 'block';
+                        isLoadingFiles = false;
+                        fileLoadRetries = 0;
+                        return;
+                    }
+                    
+                    emptyFilesElement.style.display = 'none';
+                    
+                    files.forEach(file => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <span class="file-name">${file.name}</span>
+                            <div class="file-actions">
+                                <button class="download-btn" onclick="downloadFile('${file.name}')">下载</button>
+                                <button class="delete-btn" onclick="deleteFile('${file.name}')">删除</button>
+                            </div>
+                        `;
+                        fileListElement.appendChild(listItem);
+                    });
+                    
+                    // 重置重试计数
+                    fileLoadRetries = 0;
+                    // 记录成功加载的日志
+                    console.log(`成功加载了 ${files.length} 个文件`);
+                    addLogEntry(`文件列表加载成功，共 ${files.length} 个文件`, 'success');
+                } else {
+                    // 处理HTTP错误
+                    let errorMessage = '加载文件列表失败';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorData.error || `服务器错误 (${response.status})`;
+                    } catch (e) {
+                        errorMessage = `服务器返回错误状态码: ${response.status}`;
+                    }
+                    
+                    console.error(`Error loading files: ${errorMessage}`);
+                    fileListElement.innerHTML = `<div class="file-load-error">加载失败: ${errorMessage}</div>`;
+                    showMessage(`加载文件列表失败: ${errorMessage}`, 'error');
+                    addLogEntry(`文件列表加载失败: ${errorMessage}`, 'error');
+                    
+                    // 尝试重试
+                    if (fileLoadRetries < MAX_RETRIES) {
+                        fileLoadRetries++;
+                        const retryDelay = fileLoadRetries * 1000; // 递增延迟
+                        console.log(`Retrying file list load (${fileLoadRetries}/${MAX_RETRIES}) in ${retryDelay}ms...`);
+                        addLogEntry(`将在 ${retryDelay/1000} 秒后重试 (${fileLoadRetries}/${MAX_RETRIES})`, 'info');
+                        setTimeout(() => {
+                            isLoadingFiles = false;
+                            fetchFiles();
+                        }, retryDelay);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching files:', error);
+                fileListElement.innerHTML = `<div class="file-load-error">加载失败: ${error.message || '网络错误'}</div>`;
+                showMessage(`加载文件列表时发生错误: ${error.message || '网络错误'}`, 'error');
+                addLogEntry(`网络错误: ${error.message || '未知错误'}`, 'error');
+                
+                // 尝试重试
+                if (fileLoadRetries < MAX_RETRIES) {
+                    fileLoadRetries++;
+                    const retryDelay = fileLoadRetries * 1500; // 递增延迟
+                    console.log(`Retrying file list load (${fileLoadRetries}/${MAX_RETRIES}) in ${retryDelay}ms...`);
+                    addLogEntry(`将在 ${retryDelay/1000} 秒后重试 (${fileLoadRetries}/${MAX_RETRIES})`, 'info');
+                    setTimeout(() => {
+                        isLoadingFiles = false;
+                        fetchFiles();
+                    }, retryDelay);
+                }
+            } finally {
+                isLoadingFiles = false;
             }
         }
 
-        async function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
+        function showMessage(message, type = 'success') {
             const uploadMessage = document.getElementById('uploadMessage');
-            const file = fileInput.files[0];
+            uploadMessage.textContent = message;
+            uploadMessage.style.color = type === 'success' ? '#28a745' : '#dc3545';
+            uploadMessage.style.backgroundColor = type === 'success' ? 'rgba(40, 167, 69, 0.1)' : 'rgba(220, 53, 69, 0.1)';
+            uploadMessage.style.padding = '10px';
+            uploadMessage.style.borderRadius = '5px';
+            uploadMessage.style.display = 'block';
+            
+            // 3秒后自动隐藏消息
+            setTimeout(() => {
+                uploadMessage.style.opacity = '0';
+                setTimeout(() => {
+                    uploadMessage.style.display = 'none';
+                    uploadMessage.style.opacity = '1';
+                }, 500);
+            }, 3000);
+        }
+        
+        // 添加日志条目
+        function addLogEntry(message, type = 'info') {
+            const logContainer = document.getElementById('uploadLog');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            // 获取当前时间
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            
+            // 创建时间标签
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'log-time';
+            timeSpan.textContent = `[${timeStr}]`;
+            
+            // 创建消息标签
+            const messageSpan = document.createElement('span');
+            messageSpan.className = `log-${type}`;
+            messageSpan.textContent = message;
+            
+            // 添加到日志条目
+            logEntry.appendChild(timeSpan);
+            logEntry.appendChild(messageSpan);
+            
+            // 添加到日志容器
+            logContainer.appendChild(logEntry);
+            
+            // 滚动到底部
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // 确保日志容器可见
+            logContainer.style.display = 'block';
+        }
+        
+        // 重置上传UI
+        function resetUploadUI() {
+            // 重置进度条
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressContainer.style.display = 'none';
+            progressBarFill.style.width = '0%';
+            progressText.textContent = '0%';
+            
+            // 清空文件输入
+            document.getElementById('fileInput').value = '';
+        }
+        
+        // 更新进度条
+        function updateProgress(percent) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const progressText = document.getElementById('progressText');
+            
+            // 确保进度条可见
+            progressContainer.style.display = 'block';
+            
+            // 更新进度条填充
+            progressBarFill.style.width = `${percent}%`;
+            
+            // 更新进度文本
+            progressText.textContent = `${percent}%`;
+        }
 
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
             if (!file) {
-                uploadMessage.textContent = 'Please select a file to upload.';
+                showMessage('请选择要上传的文件', 'error');
+                addLogEntry('未选择文件', 'error');
                 return;
             }
-
+            
+            // 检查文件类型（可选）
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const supportedExtensions = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'xls', 'xlsx', 'ppt', 'pptx', 'zip'];
+            if (!supportedExtensions.includes(fileExtension)) {
+                addLogEntry(`警告：文件类型 .${fileExtension} 可能不受支持`, 'info');
+            }
+            
+            // 检查文件大小限制
+            const MAX_FILE_SIZE = 3000 * 1024 * 1024; // 500MB
+            if (file.size > MAX_FILE_SIZE) {
+                showMessage(`文件大小超过限制 (${formatFileSize(MAX_FILE_SIZE)})`, 'error');
+                addLogEntry(`文件过大: ${formatFileSize(file.size)}，超过${formatFileSize(MAX_FILE_SIZE)}限制`, 'error');
+                addLogEntry('请选择较小的文件或压缩后再上传', 'info');
+                return;
+            }
+            
+            // 清空之前的日志
+            document.getElementById('uploadLog').innerHTML = '';
+            document.getElementById('uploadLog').style.display = 'block';
+            
+            // 显示上传消息
+            showMessage('正在上传...', 'success');
+            addLogEntry('开始上传文件: ' + file.name, 'info');
+            addLogEntry('文件大小: ' + formatFileSize(file.size), 'info');
+            addLogEntry('文件类型: ' + (file.type || '未知'), 'info');
+            
+            // 检查文件大小，提供警告
+            if (file.size > 100 * 1024 * 1024) { // 大于100MB
+                addLogEntry('警告：大文件上传可能需要较长时间，请耐心等待', 'info');
+            }
+            
+            // 准备FormData
             const formData = new FormData();
             formData.append('file', file);
-
-            try {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    uploadMessage.style.color = 'green';
-                    uploadMessage.textContent = data.message;
-                    fileInput.value = ''; // Clear the input
-                    fetchFiles(); // Refresh file list
-                } else {
-                    uploadMessage.style.color = 'red';
-                    uploadMessage.textContent = data.message || 'Upload failed';
+            
+            // 创建XMLHttpRequest对象
+            const xhr = new XMLHttpRequest();
+            
+            // 设置超时时间（对于大文件，设置较长的超时时间）
+            xhr.timeout = 3600000; // 1小时
+            
+            // 上次进度更新时间和值
+            let lastProgressTime = Date.now();
+            let lastProgressValue = 0;
+            let uploadStartTime = Date.now();
+            let uploadRetried = false;
+            
+            // 创建取消上传按钮
+             const cancelBtn = document.createElement('button');
+             cancelBtn.textContent = '取消上传';
+             cancelBtn.className = 'cancel-upload-btn';
+            
+            // 添加取消按钮到进度条容器下方
+            const progressContainer = document.getElementById('progressContainer');
+            progressContainer.style.display = 'block';
+            progressContainer.parentNode.insertBefore(cancelBtn, progressContainer.nextSibling);
+            
+            // 添加取消上传功能
+            cancelBtn.addEventListener('click', () => {
+                if (confirm('确定要取消上传吗？')) {
+                    xhr.abort();
+                    addLogEntry('用户手动取消了上传', 'info');
+                    // 移除取消按钮
+                    cancelBtn.remove();
                 }
+            });
+            
+            // 监听上传进度
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = Math.round((event.loaded / event.total) * 100);
+                    updateProgress(percentComplete);
+                    
+                    const now = Date.now();
+                    const timeSinceLastUpdate = now - lastProgressTime;
+                    
+                    // 每10%或者每30秒记录一次日志
+                    if (percentComplete % 10 === 0 && percentComplete > lastProgressValue) {
+                        addLogEntry(`已上传 ${percentComplete}%`, 'info');
+                        lastProgressValue = percentComplete;
+                        lastProgressTime = now;
+                    } else if (timeSinceLastUpdate > 30000) { // 30秒
+                        // 计算上传速度
+                        const uploadedBytes = event.loaded;
+                        const totalBytes = event.total;
+                        const elapsedTime = (now - uploadStartTime) / 1000; // 秒
+                        const uploadSpeed = uploadedBytes / elapsedTime; // 字节/秒
+                        const remainingBytes = totalBytes - uploadedBytes;
+                        const estimatedTimeRemaining = remainingBytes / uploadSpeed; // 秒
+                        
+                        addLogEntry(`上传进度 ${percentComplete}%，速度: ${formatFileSize(uploadSpeed)}/s，预计剩余时间: ${formatTime(estimatedTimeRemaining)}`, 'info');
+                        lastProgressTime = now;
+                    }
+                    
+                    // 如果进度为100%，但还没有收到服务器响应
+                    if (percentComplete === 100 && lastProgressValue !== 100) {
+                        addLogEntry('文件已全部上传，等待服务器处理...', 'info');
+                        lastProgressValue = 100;
+                    }
+                }
+            });
+            
+            // 上传完成
+            xhr.addEventListener('load', () => {
+                // 移除取消按钮
+                cancelBtn.remove();
+                
+                const uploadDuration = ((Date.now() - uploadStartTime) / 1000).toFixed(2);
+                addLogEntry(`上传耗时: ${uploadDuration} 秒`, 'info');
+                
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    addLogEntry('服务器确认上传完成', 'success');
+                    showMessage('文件上传成功', 'success');
+                    
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            addLogEntry(`服务器消息: ${response.message}`, 'success');
+                        }
+                        if (response.filename) {
+                            addLogEntry(`已保存为: ${response.filename}`, 'success');
+                        }
+                    } catch (e) {
+                        addLogEntry('无法解析服务器响应，但上传已完成', 'info');
+                    }
+                    
+                    // 重置UI
+                    resetUploadUI();
+                    
+                    // 自动切换到文件列表页面
+                    setTimeout(() => {
+                        document.querySelector('.sidebar-menu li[data-section="files"]').click();
+                    }, 1500); // 延迟1.5秒后切换，让用户有时间看到成功消息
+                } else {
+                    let errorMessage = '未知错误';
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        errorMessage = response.message || response.error || '未知错误';
+                    } catch (e) {
+                        errorMessage = `服务器返回了无效的响应 (状态码: ${xhr.status})`;
+                    }
+                    
+                    addLogEntry(`上传失败: ${errorMessage}`, 'error');
+                    addLogEntry(`服务器状态码: ${xhr.status}`, 'error');
+                    showMessage(`上传失败: ${errorMessage}`, 'error');
+                    
+                    // 对于某些错误，提供重试选项
+                    if (xhr.status === 503 || xhr.status === 429 || xhr.status === 408) {
+                        if (!uploadRetried) {
+                            const retryBtn = document.createElement('button');
+                             retryBtn.textContent = '重试上传';
+                             retryBtn.className = 'retry-upload-btn';
+                            
+                            retryBtn.addEventListener('click', () => {
+                                retryBtn.remove();
+                                uploadRetried = true;
+                                addLogEntry('正在重试上传...', 'info');
+                                uploadFile();
+                            });
+                            
+                            document.getElementById('uploadLog').parentNode.appendChild(retryBtn);
+                            addLogEntry('您可以点击"重试上传"按钮重新尝试', 'info');
+                        } else {
+                            addLogEntry('多次重试失败，请稍后再试或联系管理员', 'error');
+                        }
+                    }
+                }
+            });
+            
+            // 上传错误
+            xhr.addEventListener('error', () => {
+                // 移除取消按钮
+                cancelBtn.remove();
+                
+                addLogEntry('网络错误，上传失败', 'error');
+                addLogEntry('可能原因: 网络连接中断、服务器不可达或服务器内部错误', 'error');
+                showMessage('网络错误，上传失败', 'error');
+                
+                // 提供网络诊断信息
+                addLogEntry('正在检查网络连接...', 'info');
+                setTimeout(() => {
+                    // 简单的网络检查
+                    const onlineStatus = navigator.onLine ? '在线' : '离线';
+                    addLogEntry(`网络状态: ${onlineStatus}`, onlineStatus === '在线' ? 'info' : 'error');
+                    
+                    if (onlineStatus === '在线' && !uploadRetried) {
+                        const retryBtn = document.createElement('button');
+                         retryBtn.textContent = '重试上传';
+                         retryBtn.className = 'retry-upload-btn';
+                        
+                        retryBtn.addEventListener('click', () => {
+                            retryBtn.remove();
+                            uploadRetried = true;
+                            addLogEntry('正在重试上传...', 'info');
+                            uploadFile();
+                        });
+                        
+                        document.getElementById('uploadLog').parentNode.appendChild(retryBtn);
+                        addLogEntry('网络似乎正常，可能是服务器暂时不可用，您可以点击"重试上传"按钮重新尝试', 'info');
+                    }
+                }, 1000);
+                
+                resetUploadUI();
+            });
+            
+            // 上传超时
+            xhr.addEventListener('timeout', () => {
+                // 移除取消按钮
+                cancelBtn.remove();
+                
+                addLogEntry('上传超时，请检查网络连接或尝试上传较小的文件', 'error');
+                addLogEntry('如果您正在上传大文件，可能需要更稳定的网络连接', 'info');
+                showMessage('上传超时', 'error');
+                resetUploadUI();
+            });
+            
+            // 上传中止
+            xhr.addEventListener('abort', () => {
+                // 移除取消按钮
+                cancelBtn.remove();
+                
+                addLogEntry('上传已取消', 'error');
+                showMessage('上传已取消', 'error');
+                resetUploadUI();
+            });
+            
+            // 开始上传
+            xhr.open('POST', '/api/upload', true);
+            
+            // 添加请求完成的回调
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) { // 请求完成
+                    addLogEntry(`请求完成，状态: ${xhr.status}`, 'info');
+                }
+            };
+            
+            // 发送请求
+            try {
+                xhr.send(formData);
+                addLogEntry('请求已发送，开始上传...', 'info');
             } catch (error) {
-                console.error('Error:', error);
-                uploadMessage.style.color = 'red';
-                uploadMessage.textContent = 'An error occurred during upload.';
+                // 移除取消按钮
+                cancelBtn.remove();
+                
+                addLogEntry(`发送请求时出错: ${error.message}`, 'error');
+                showMessage('发送请求失败', 'error');
+                resetUploadUI();
             }
+        }
+        
+        // 格式化时间（秒）为可读格式
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return '未知';
+            if (seconds < 60) return `${Math.round(seconds)}秒`;
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}分${Math.round(seconds % 60)}秒`;
+            return `${Math.floor(seconds / 3600)}小时${Math.floor((seconds % 3600) / 60)}分`;
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         function downloadFile(filename) {
@@ -169,12 +942,13 @@
         }
 
         async function deleteFile(filename) {
-            if (!confirm(`Are you sure you want to delete ${filename}?`)) {
+            if (!confirm(`确定要删除文件 ${filename} 吗？`)) {
                 return;
             }
 
-            const uploadMessage = document.getElementById('uploadMessage');
             try {
+                showMessage('正在删除...', 'success');
+                
                 const response = await fetch(`/api/delete?filename=${encodeURIComponent(filename)}`, {
                     method: 'DELETE',
                 });
@@ -182,17 +956,15 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    uploadMessage.style.color = 'green';
-                    uploadMessage.textContent = data.message;
-                    fetchFiles(); // Refresh file list
+                    showMessage(data.message || '文件删除成功', 'success');
+                    // 刷新文件列表
+                    fetchFiles();
                 } else {
-                    uploadMessage.style.color = 'red';
-                    uploadMessage.textContent = data.message || 'Delete failed';
+                    showMessage(data.message || '删除失败', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                uploadMessage.style.color = 'red';
-                uploadMessage.textContent = 'An error occurred during delete.';
+                showMessage('删除过程中发生错误', 'error');
             }
         }
 
@@ -203,12 +975,9 @@
             if (response.ok) {
                 window.location.href = '/login';
             } else {
-                alert('Logout failed.');
+                alert('退出登录失败');
             }
         }
-
-        // Fetch files on page load
-        document.addEventListener('DOMContentLoaded', fetchFiles);
     </script>
 </body>
 </html>
