@@ -56,6 +56,7 @@ docker run -d \
   -e MINIO_ACCESS_KEY_ID=admin \
   -e MINIO_SECRET_ACCESS_KEY=admin@2025 \
   -e MINIO_BUCKET_NAME=knowledge-bucket \
+  -p 30080:8080 \
   registry_address/knowledge_base:tag
 ```
 
