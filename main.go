@@ -1,10 +1,3 @@
-// ------------------------------------------------------------
-// @Author: sulibao(cn-chengdu)
-// @Email: sulibao2003@163.com
-// @Last Modified by: sulibao(cn-chengdu)
-// @Description: If you have any questions, please contact me at the above email address.
-// ------------------------------------------------------------
-
 package main
 
 import (

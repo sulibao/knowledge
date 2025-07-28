@@ -514,6 +514,8 @@
                         const listItem = document.createElement('li');
                         listItem.innerHTML = `
                             <span class="file-name">${file.name}</span>
+                            <span class="file-size">${formatFileSize(file.size)}</span>
+                            <span class="file-time">${file.lastModified ? new Date(file.lastModified).toLocaleString() : ''}</span>
                             <div class="file-actions">
                                 <button class="download-btn" onclick="downloadFile('${file.name}')">下载</button>
                                 <button class="delete-btn" onclick="deleteFile('${file.name}')">删除</button>
@@ -800,9 +802,9 @@
                     resetUploadUI();
                     
                     // 自动切换到文件列表页面
-                    setTimeout(() => {
-                        document.querySelector('.sidebar-menu li[data-section="files"]').click();
-                    }, 1500); // 延迟1.5秒后切换，让用户有时间看到成功消息
+                    // setTimeout(() => {
+                    //     document.querySelector('.sidebar-menu li[data-section="files"]').click();
+                    // }, 1500); // 延迟1.5秒后切换，让用户有时间看到成功消息
                 } else {
                     let errorMessage = '未知错误';
                     try {
