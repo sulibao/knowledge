@@ -126,7 +126,7 @@
                     window.location.href = '/dashboard'; // Redirect to dashboard on successful login
                 } else {
                     messageElement.style.color = 'red';
-                    messageElement.textContent = data.message || 'Login failed';
+                    messageElement.textContent = data.message || '登录失败';
                 }
             } catch (error) {
                 console.error('Error:', error);

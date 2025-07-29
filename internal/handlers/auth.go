@@ -72,7 +72,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if existingUser == nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid credentials"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "登录失败，请检查用户名和密码！"})
 		return
 	}
 
@@ -84,7 +84,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password))
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid credentials"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "登录失败，请检查用户名和密码！"})
 		return
 	}
 
@@ -98,5 +98,5 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Session authenticated status after login: %v\n", session.Values["authenticated"])
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Login successful"})
+	json.NewEncoder(w).Encode(map[string]string{"message": "登录成功"})
 }
