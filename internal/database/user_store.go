@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"go-pro/0602/internal/models"
+	"github.com/sulibao/knowledge/internal/models"
 
 	"golang.org/x/crypto/bcrypt"
 )

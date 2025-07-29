@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"go-pro/0602/internal/config"
+	"github.com/sulibao/knowledge/internal/config"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
