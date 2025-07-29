@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"go-pro/0602/internal/config"
+	"github.com/sulibao/knowledge/internal/config"
 
 	_ "github.com/lib/pq"
 )

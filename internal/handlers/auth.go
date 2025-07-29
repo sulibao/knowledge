@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
-	"go-pro/0602/internal/database"
-	"go-pro/0602/internal/middleware"
-	"go-pro/0602/internal/models"
 	"log"
 	"net/http"
+
+	"github.com/sulibao/knowledge/internal/database"
+	"github.com/sulibao/knowledge/internal/middleware"
+	"github.com/sulibao/knowledge/internal/models"
 
 	"golang.org/x/crypto/bcrypt"
 )

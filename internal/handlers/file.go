@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"go-pro/0602/internal/config"
 	"github.com/minio/minio-go/v7"
+	"github.com/sulibao/knowledge/internal/config"
 )
 
 type FileHandler struct {
@@ -26,7 +26,7 @@ func NewFileHandler(minioClient *minio.Client, cfg *config.Config) *FileHandler 
 func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	// 设置响应头为JSON
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	// 获取上传的文件
 	file, header, err := r.FormFile("file")
 	if err != nil {
@@ -38,9 +38,9 @@ func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	// 记录上传信息
-	log.Printf("File upload started: %s, size: %d bytes, content-type: %s", 
+	log.Printf("File upload started: %s, size: %d bytes, content-type: %s",
 		header.Filename, header.Size, header.Header.Get("Content-Type"))
-	
+
 	// 检查文件大小
 	if header.Size > 1024*1024*1024 { // 1GB
 		log.Printf("File too large: %s (%d bytes)", header.Filename, header.Size)
@@ -51,7 +51,7 @@ func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	objectName := filepath.Base(header.Filename)
 	contentType := header.Header.Get("Content-Type")
-	
+
 	// 记录开始上传到MinIO的时间
 	startTime := time.Now()
 	log.Printf("Starting MinIO upload for %s", objectName)
@@ -69,15 +69,15 @@ func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	// 计算上传耗时
 	uploadDuration := time.Since(startTime)
-	log.Printf("Successfully uploaded %s of size %d bytes in %v", 
+	log.Printf("Successfully uploaded %s of size %d bytes in %v",
 		objectName, info.Size, uploadDuration)
-	
+
 	// 返回成功响应
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
-		"message": "文件上传成功", 
+		"message":  "文件上传成功",
 		"filename": objectName,
-		"size": fmt.Sprintf("%d", info.Size),
+		"size":     fmt.Sprintf("%d", info.Size),
 		"duration": uploadDuration.String(),
 	})
 }
@@ -85,24 +85,24 @@ func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 func (h *FileHandler) ListFiles(w http.ResponseWriter, r *http.Request) {
 	// 设置响应头为JSON
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	// 记录开始获取文件列表的时间
 	startTime := time.Now()
 	log.Printf("Starting to list files from bucket: %s", h.Config.Minio.BucketName)
-	
+
 	ctx := context.Background()
 	objectsCh := h.MinioClient.ListObjects(ctx, h.Config.Minio.BucketName, minio.ListObjectsOptions{Recursive: true})
 
 	var files []map[string]interface{}
 	var errorOccurred bool
-	
+
 	for object := range objectsCh {
 		if object.Err != nil {
 			log.Printf("Error listing objects: %v", object.Err)
 			errorOccurred = true
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{
-				"error": "获取文件列表失败", 
+				"error":   "获取文件列表失败",
 				"message": object.Err.Error(),
 			})
 			return
@@ -117,7 +117,7 @@ func (h *FileHandler) ListFiles(w http.ResponseWriter, r *http.Request) {
 
 	// 计算获取文件列表耗时
 	listDuration := time.Since(startTime)
-	
+
 	// 如果没有发生错误，返回文件列表
 	if !errorOccurred {
 		log.Printf("Successfully listed %d files in %v", len(files), listDuration)

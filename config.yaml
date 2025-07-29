@@ -1,5 +1,5 @@
 database:
-  host: 192.168.2.190
+  host: 8.137.21.201
   port: 35432
   user: postgres
   password: SLBpg2025
@@ -7,7 +7,7 @@ database:
   sslmode: disable
 
 minio:
-  endpoint: 192.168.2.190:39000
+  endpoint: 8.137.21.201:39000
   accessKeyID: admin
   secretAccessKey: admin@2025
   useSSL: false

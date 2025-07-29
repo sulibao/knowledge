@@ -1,4 +1,4 @@
-module go-pro/0602
+module github.com/sulibao/knowledge
 
 go 1.23.0
 

@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"go-pro/0602/internal/config"
-	"go-pro/0602/internal/database"
-	"go-pro/0602/internal/handlers"
-	"go-pro/0602/internal/middleware"
-	minio_client "go-pro/0602/internal/minio"
+	"github.com/sulibao/knowledge/internal/config"
+	"github.com/sulibao/knowledge/internal/database"
+	"github.com/sulibao/knowledge/internal/handlers"
+	"github.com/sulibao/knowledge/internal/middleware"
+	minio_client "github.com/sulibao/knowledge/internal/minio"
 
 	"github.com/gorilla/mux"
 )
