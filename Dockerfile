@@ -13,7 +13,6 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 # 配置文件作为默认配置，可以被环境变量覆盖
 COPY --from=builder /app/config.yaml .
-COPY --from=builder /app/json/ ./json/
 COPY --from=builder /app/public/ ./public/
 
 # 设置环境变量默认值
