@@ -46,7 +46,7 @@ docker buildx build --provenance=false --push --tag registry_address/knowledge_b
 ```bash
 # 变量由命令行传参声明
 docker run -d \
-  --name knowledge-base \
+  --name knowledge-base --restart=always --privileged=true \
   -p 8080:8080 \
   -e DB_HOST=xx.xx.xx.xx \
   -e DB_PORT=xx \
