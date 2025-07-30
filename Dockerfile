@@ -6,8 +6,11 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 FROM registry.cn-chengdu.aliyuncs.com/su03/alpine:latest
-RUN apk --no-cache add ca-certificates
 
+RUN apk --no-cache update && \
+    apk --no-cache add \
+        ca-certificates curl vim bash-completion busybox-extras && \
+        rm -rf /var/cache/apk/* 
 WORKDIR /root/
 
 COPY --from=builder /app/main .
