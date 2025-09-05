@@ -25,14 +25,14 @@
 
 - `SERVER_PORT`: 服务器监听端口
 
-## golang环境运行
+## golang环境运行（需要提前准备postgresql和minio）
 
 ```golang
 // 修改./config.yaml变量文件
 go run main.go
 ```
 
-## Docker 部署
+## Docker 部署（需要提前准备postgresql和minio）
 
 ### 构建 Docker 镜像
 
@@ -59,6 +59,17 @@ docker run -d \
   -e MINIO_BUCKET_NAME=knowledge-bucket \
   -p 30080:8080 \
   registry_address/knowledge_base:tag
+```
+
+## docker-compose部署（容器方式运行postgresql、minio、knowledge）
+
+```yaml
+cd ./docker-compose-knowledge
+
+# 检查.env配置文件，按照实际进行配置
+
+docker-compose -f docker-compose.yml up d   # 启动
+docker-cmopose -f docker-cmopose.yml down   # 关闭
 ```
 
 ## K8S/Chart部署

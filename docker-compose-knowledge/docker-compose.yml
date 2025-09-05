@@ -1,0 +1,80 @@
+version: '3'
+
+services:
+  minio:
+    image: ${minio_image}
+    container_name: minio-server
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${minio_ak}
+      MINIO_ROOT_PASSWORD: ${minio_sk}
+      MINIO_DEFAULT_BUCKETS: "app-bucket:private"
+      TZ: Asia/Shanghai
+    ports:
+      - "9000:9000"
+      - "29001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - middleware-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  postgres:
+    image: ${postgresql_image}
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${postgresql_user}
+      POSTGRES_PASSWORD: ${postgresql_passwd}
+      POSTGRES_DB: postgres
+      TZ: Asia/Shanghai
+      POSTGRESQL_MAX_CONNECTIONS: 1000
+    ports:
+      - "2345:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - middleware-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgadmin -d appdb"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  knowledge:
+    image: ${knowledge_image}
+    container_name: knowledge-base
+    restart: always
+    environment:
+      DB_HOST: postgres-db
+      DB_PORT: "5432"
+      DB_USER: ${postgresql_user}
+      DB_PASSWORD: ${postgresql_passwd}
+      DB_NAME: ${knowledge_db}
+      MINIO_ENDPOINT: "minio-server:9000"
+      MINIO_ACCESS_KEY_ID: ${minio_ak}
+      MINIO_SECRET_ACCESS_KEY: ${minio_sk}
+      MINIO_BUCKET_NAME: ${knowledge_bucket}
+    networks:
+      - middleware-network
+    ports:
+     - "8080:8080"
+
+networks:
+  middleware-network:
+    driver: bridge
+    name: middleware-network
+
+volumes:
+  postgres-data:
+    driver: local
+    name: postgres-data
+  minio-data:  
+    driver: local
+    name: minio-data
