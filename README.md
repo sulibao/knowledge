@@ -50,6 +50,10 @@ cd ./docker-compose-knowledge
 
 docker-compose -f docker-compose.yml up d   # 启动
 docker-cmopose -f docker-compose.yml down   # 关闭
+
+# 单独更新knowledge和单独重启knowledge
+docker-compose -f docker-compose.yml up -d --no-deps --build knowledge
+docker-compose -f docker-compose.yml restart knowledge
 ```
 
 ## K8S/Chart部署
