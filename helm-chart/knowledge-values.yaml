@@ -5,7 +5,7 @@ app:
   replicas: "1"
   image:
     repository: "registry.cn-chengdu.aliyuncs.com/su03/knowledge_base"
-    tag: "25073001"
+    tag: "25091001-amd"
     pullPolicy: IfNotPresent
 
 # 资源限制配置

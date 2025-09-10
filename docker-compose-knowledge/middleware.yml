@@ -47,25 +47,6 @@ services:
       retries: 3
       start_period: 30s
 
-  knowledge:
-    image: ${knowledge_image}
-    container_name: knowledge-base
-    restart: always
-    environment:
-      DB_HOST: postgres-db
-      DB_PORT: "5432"
-      DB_USER: ${postgresql_user}
-      DB_PASSWORD: ${postgresql_passwd}
-      DB_NAME: ${knowledge_db}
-      MINIO_ENDPOINT: "minio-server:9000"
-      MINIO_ACCESS_KEY_ID: ${minio_ak}
-      MINIO_SECRET_ACCESS_KEY: ${minio_sk}
-      MINIO_BUCKET_NAME: ${knowledge_bucket}
-    networks:
-      - middleware-network
-    ports:
-     - "8080:8080"
-
 networks:
   middleware-network:
     driver: bridge

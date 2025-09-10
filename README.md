@@ -68,8 +68,9 @@ cd ./docker-compose-knowledge
 
 # 检查.env配置文件，按照实际进行配置
 
-docker-compose -f docker-compose.yml up d   # 启动
-docker-cmopose -f docker-cmopose.yml down   # 关闭
+docker-compose -f middleware.yml up d   # 启动
+docker-compose -f knowledge.yml up d
+docker-cmopose -f xxx.yml down   # 关闭
 ```
 
 ## K8S/Chart部署
