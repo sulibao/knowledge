@@ -16,20 +16,6 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/config.yaml .
 COPY --from=builder /app/public/ ./public/
 
-# 设置环境变量默认值
-ENV DB_HOST="xxx" \
-    DB_PORT="xxx" \
-    DB_USER="xxx" \
-    DB_PASSWORD="xxx" \
-    DB_NAME="xxx" \
-    DB_SSLMODE="xxx" \
-    MINIO_ENDPOINT="xxx" \
-    MINIO_ACCESS_KEY_ID="xxx" \
-    MINIO_SECRET_ACCESS_KEY="xxx" \
-    MINIO_USE_SSL="false" \
-    MINIO_BUCKET_NAME="xxx" \
-    SERVER_PORT="xxx"
-
 EXPOSE 8080
 
 CMD ["./main"]
