@@ -501,7 +501,8 @@
                     const files = await response.json();
                     fileListElement.innerHTML = '';
                     
-                    if (files.length === 0) {
+                    // 检查files是否为null或undefined
+                    if (!files || files.length === 0) {
                         emptyFilesElement.style.display = 'block';
                         isLoadingFiles = false;
                         fileLoadRetries = 0;
@@ -527,8 +528,8 @@
                     // 重置重试计数
                     fileLoadRetries = 0;
                     // 记录成功加载的日志
-                    console.log(`成功加载了 ${files.length} 个文件`);
-                    addLogEntry(`文件列表加载成功，共 ${files.length} 个文件`, 'success');
+                    console.log(`成功加载了 ${files ? files.length : 0} 个文件`);
+                    addLogEntry(`文件列表加载成功，共 ${files ? files.length : 0} 个文件`, 'success');
                 } else {
                     // 处理HTTP错误
                     let errorMessage = '加载文件列表失败';
@@ -783,13 +784,13 @@
                 addLogEntry(`上传耗时: ${uploadDuration} 秒`, 'info');
                 
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    addLogEntry('服务器确认上传完成', 'success');
+                    addLogEntry('上传完成', 'success');
                     showMessage('文件上传成功', 'success');
                     
                     try {
                         const response = JSON.parse(xhr.responseText);
                         if (response.message) {
-                            addLogEntry(`服务器消息: ${response.message}`, 'success');
+                            addLogEntry(`${response.message}`, 'success');
                         }
                         if (response.filename) {
                             addLogEntry(`已保存为: ${response.filename}`, 'success');
