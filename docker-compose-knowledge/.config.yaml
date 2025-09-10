@@ -1,0 +1,17 @@
+database:
+  host: postgres-db
+  port: 5432
+  user: postgres
+  password: SLBpg2025
+  dbname: knowledge_base
+  sslmode: disable
+
+minio:
+  endpoint: minio-server:9000
+  accessKeyID: slbminio
+  secretAccessKey: SLBminio2025
+  useSSL: false
+  bucketName: knowledge-bucket
+
+server:
+  port: ":8080"

@@ -47,6 +47,17 @@ services:
       retries: 3
       start_period: 30s
 
+  knowledge:
+    image: ${knowledge_image}
+    container_name: knowledge-base
+    restart: always
+    volumes:
+      - ./.config.yaml:/root/config.yaml
+    networks:
+      - middleware-network
+    ports:
+     - "8080:8080"
+
 networks:
   middleware-network:
     driver: bridge

@@ -41,36 +41,15 @@ go run main.go
 docker buildx build --provenance=false --push --tag registry_address/knowledge_base:tag --platform linux/amd64,linux/arm64 .
 ```
 
-### 运行 Docker 容器
-
-```bash
-# 变量由命令行传参声明
-docker run -d \
-  --name knowledge-base --restart=always --privileged=true \
-  -p 8080:8080 \
-  -e DB_HOST=xx.xx.xx.xx \
-  -e DB_PORT=xx \
-  -e DB_USER=postgres \
-  -e DB_PASSWORD=xx \
-  -e DB_NAME=knowledge_base \
-  -e MINIO_ENDPOINT=xx \
-  -e MINIO_ACCESS_KEY_ID=xx \
-  -e MINIO_SECRET_ACCESS_KEY=xx \
-  -e MINIO_BUCKET_NAME=knowledge-bucket \
-  -p 30080:8080 \
-  registry_address/knowledge_base:tag
-```
-
 ## docker-compose部署（容器方式运行postgresql、minio、knowledge）
 
 ```yaml
 cd ./docker-compose-knowledge
 
-# 检查.env配置文件，按照实际进行配置
+# 检查`.env`变量文件和`.config.yaml`配置文件，按照实际进行配置
 
-docker-compose -f middleware.yml up d   # 启动
-docker-compose -f knowledge.yml up d
-docker-cmopose -f xxx.yml down   # 关闭
+docker-compose -f docker-compose.yml up d   # 启动
+docker-cmopose -f docker-compose.yml down   # 关闭
 ```
 
 ## K8S/Chart部署

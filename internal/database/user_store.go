@@ -106,7 +106,7 @@ func (s *UserStore) EnsureDefaultAdmin() {
 	} else {
 		// admin用户已存在，确保密码为默认值
 		log.Println("Default admin user 'admin' already exists. Ensuring password is 'admin123'...")
-		err = s.UpdateUserPassword("Admin", "Admin123")
+		err = s.UpdateUserPassword("admin", "admin123")
 		if err != nil {
 			log.Fatalf("Error updating default admin password: %v", err)
 		}
