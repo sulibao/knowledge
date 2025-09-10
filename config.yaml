@@ -1,15 +1,15 @@
 database:
-  host: 192.168.2.155
-  port: 35432
+  host: 192.168.226.100
+  port: 5432
   user: postgres
   password: SLBpg2025
   dbname: knowledge_base
   sslmode: disable
 
 minio:
-  endpoint: 192.168.2.155:39000
-  accessKeyID: admin
-  secretAccessKey: admin@2025
+  endpoint: 192.168.226.100:9000
+  accessKeyID: slbminio
+  secretAccessKey: SLBminio2025
   useSSL: false
   bucketName: knowledge-bucket
 
